@@ -67,6 +67,7 @@ public class Assembler {
             System.out.println("rs1 : " + rs1);
             System.out.println("imm : " + imm);
             System.out.println(imm + rs1 + "010" + rd + "0000011");
+            System.out.println("test");
         } else {
             System.out.println("error");
         }
