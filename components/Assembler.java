@@ -43,18 +43,48 @@ public class Assembler {
         s.close();
         return converted;
     }
+    public void binarytodeciaml (String s)throws Exception{
+        String str1 = s.substring(0, 16);
+        String str2 = s.substring(16, 32);
+
+        ////// 0-16 bit //////////
+        long binaryString=Long.parseLong(str2);
+        long decimal = 0;  
+        int n = 0;  
+        while(true){  
+          if(binaryString == 0){  break;  } 
+          else {  
+              long temp = binaryString%10;  
+              decimal += temp*Math.pow(2, n);  
+              binaryString = binaryString/10;  
+              n++;  
+           }  
+        }  
+        /////////////// 16 bit -32 bit//////////
+        long binaryString1=Long.parseLong(str1); 
+        while(true){  
+          if(binaryString1 == 0){  break;  } 
+          else {  
+              long temp = binaryString1%10;  
+              decimal += temp*Math.pow(2, n);  
+              binaryString1 = binaryString1/10;  
+              n++;  
+           }  
+        }  
+        System.out.println(decimal);
+    }
 
     public void convert(String[] result) throws Exception {
         if (result[1].equals("lw")) { // case lw I-type
-            int r1 = Integer.parseInt(String.valueOf(result[2]));
-            int r2 = Integer.parseInt(String.valueOf(result[3]));
-            int r3 = 5;
-            String rd = Integer.toBinaryString(r1);
-            String rs1 = Integer.toBinaryString(r2);
-            String imm = Integer.toBinaryString(r3);
+            long r1 = Long.parseLong(String.valueOf(result[2]));
+            long r2 = Long.parseLong(String.valueOf(result[3]));
+            long r3 = 5;
+            String rd = Long.toBinaryString(r1);
+            String rs1 = Long.toBinaryString(r2);
+            String imm = Long.toBinaryString(r3);
             do {
                 rd = "0" + rd;
-            } while (rd.length() < 3); // Check rd bit
+            } while (rd.length() < 5); // Check rd bit
             do {
                 rs1 = "0" + rs1;
             } while (rs1.length() < 5); // Check rs1 bit
@@ -66,8 +96,9 @@ public class Assembler {
             System.out.println("rd : " + rd);
             System.out.println("rs1 : " + rs1);
             System.out.println("imm : " + imm);
-            System.out.println(imm + rs1 + "010" + rd + "0000011");
-            System.out.println("test");
+            String temp = imm + rs1 + "010" + rd + "0000011";
+            System.out.println(temp);
+            binarytodeciaml(temp);
         } else {
             System.out.println("error");
         }
