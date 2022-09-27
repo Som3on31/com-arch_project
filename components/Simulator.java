@@ -29,6 +29,8 @@ public class Simulator {
         Assembler asb = new Assembler();
 
         s.nextLine();
+
+        
         // TODO separate all inst codes into parts then convert them into binary and hex
         // address
 

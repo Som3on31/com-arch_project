@@ -44,6 +44,19 @@ public class Assembler {
         return converted;
     }
 
+    public void convert(String[] result) throws Exception {
+        if (result[1].equals("lw")) { // case lw I-type
+            int r = Integer.parseInt(String.valueOf(result[2]));
+            String rd = Integer.toBinaryString(r);
+            do {
+                rd = "0" + rd;
+            } while (rd.length() < 3); // Check rd bit
+            System.out.println("rd : " + rd);
+        } else {
+            System.out.println("error");
+        }
+    }
+
     // Type check
     private boolean isInst(String word) {
         word = word.toLowerCase();
