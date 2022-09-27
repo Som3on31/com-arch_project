@@ -34,12 +34,13 @@ public class Simulator {
         // TODO separate all inst codes into parts then convert them into binary and hex
         // address
 
-        // TODO execute inst given
+        // TODO execute inst given, remember to print error if it does anything
+        // undefined to the project spec
 
         s.close();
     }
 
-    // used in run to show the current state
+    // --------------Used in run to show the current state
     private void printStateInitial() {
         // show mem
 
@@ -51,4 +52,7 @@ public class Simulator {
         // example:
         // http://myweb.cmu.ac.th/sansanee.a/ComputerArchitecture/Project/ExSimulator.txt
     }
+
+    // TODO add any private code if necessary, do not forget to comment how it works
+    // (either English or Thai) then type - [name] after the comment
 }
