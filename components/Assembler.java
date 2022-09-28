@@ -43,9 +43,9 @@ public class Assembler {
         s.close();
         return converted;
     }
-    public void binarytodeciaml (String s)throws Exception{
-        String str1 = s.substring(0, 16);
-        String str2 = s.substring(16, 32);
+    public long binarytodeciaml (String binary)throws Exception{
+        String str1 = binary.substring(0, 16);
+        String str2 = binary.substring(16, 32);
 
         ////// 0-16 bit //////////
         long binaryString=Long.parseLong(str2);
@@ -71,7 +71,22 @@ public class Assembler {
               n++;  
            }  
         }  
-        System.out.println(decimal);
+        return decimal;
+    }
+
+    public String decimaltohexadecimal (long decimal) throws Exception{
+        int d=(int) decimal;
+        int rem;  
+        String hex="";   
+        char hexchars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};  
+        while(d>0){  
+            rem=d%16;   
+            hex=hexchars[rem]+hex;   
+            d=d/16;  
+            rem++;
+        }  
+        
+        return hex;  
     }
 
     public void convert(String[] result) throws Exception {
@@ -98,7 +113,8 @@ public class Assembler {
             System.out.println("imm : " + imm);
             String temp = imm + rs1 + "010" + rd + "0000011";
             System.out.println(temp);
-            binarytodeciaml(temp);
+            System.out.println(binarytodeciaml(temp));
+            System.out.println(decimaltohexadecimal(binarytodeciaml(temp)));
         } else {
             System.out.println("error");
         }
