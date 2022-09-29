@@ -44,33 +44,70 @@ public class Assembler {
         return converted;
     }
     public long binarytodeciaml (String binary)throws Exception{
-        String str1 = binary.substring(0, 16);
-        String str2 = binary.substring(16, 32);
+        String check = binary.substring(0,1);
+        long decimal = 0; 
 
-        ////// 0-16 bit //////////
-        long binaryString=Long.parseLong(str2);
-        long decimal = 0;  
-        int n = 0;  
-        while(true){  
-          if(binaryString == 0){  break;  } 
-          else {  
-              long temp = binaryString%10;  
-              decimal += temp*Math.pow(2, n);  
-              binaryString = binaryString/10;  
-              n++;  
+        if(check=="1" && binary.length() == 32){
+            int a=0;
+            StringBuilder builder = new StringBuilder();
+
+                for (int i = 0; i < binary.length(); i++) {builder.append((binary.charAt(i) == '1' ? '0' : '1'));}
+                String str1 = builder.substring(0, 16);//bit16-32
+                String str2 = builder.substring(16, 32);//bit0-16
+                long binaryString=Long.parseLong(str2);//bit0-16
+                long binaryString1=Long.parseLong(str1); //bit16-32
+
+                //bit0-16//
+                while(true){  
+                    if(binaryString == 0){  break;  } 
+                    else {  
+                        long temp = binaryString%10;  
+                        decimal += temp*Math.pow(2, a);  
+                        binaryString = binaryString/10;  
+                        a++;  
+                     }  
+                  }  
+                  //bit16-32//
+                  while(true){  
+                    if(binaryString1 == 0){  break;  } 
+                    else {  
+                        long temp = binaryString1%10;  
+                        decimal += temp*Math.pow(2, a);  
+                        binaryString1 = binaryString1/10;  
+                        a++;  
+                     }  
+                  }
+                  decimal -= decimal*2;
+        }else{
+            String str1 = binary.substring(0, 16);//bit16-32
+            String str2 = binary.substring(16, 32);//bit0-16
+            long binaryString=Long.parseLong(str2);//bit0-16
+            long binaryString1=Long.parseLong(str1); //bit16-32
+
+            ////// 0-16 bit //////////    
+           int n = 0;  
+           while(true){  
+             if(binaryString == 0){  break;  } 
+             else {  
+                 long temp = binaryString%10;  
+                 decimal += temp*Math.pow(2, n);  
+                 binaryString = binaryString/10;  
+                 n++;  
+              }  
            }  
+           /////////////// 16 bit -32 bit//////////
+           while(true){  
+             if(binaryString1 == 0){  break;  } 
+             else {  
+                 long temp = binaryString1%10;  
+                 decimal += temp*Math.pow(2, n);  
+                 binaryString1 = binaryString1/10;  
+                 n++;  
+              }  
+           }
+
         }  
-        /////////////// 16 bit -32 bit//////////
-        long binaryString1=Long.parseLong(str1); 
-        while(true){  
-          if(binaryString1 == 0){  break;  } 
-          else {  
-              long temp = binaryString1%10;  
-              decimal += temp*Math.pow(2, n);  
-              binaryString1 = binaryString1/10;  
-              n++;  
-           }  
-        }  
+        
         return decimal;
     }
 
@@ -115,6 +152,7 @@ public class Assembler {
             System.out.println(temp);
             System.out.println(binarytodeciaml(temp));
             System.out.println(decimaltohexadecimal(binarytodeciaml(temp)));
+
         } else {
             System.out.println("error");
         }
