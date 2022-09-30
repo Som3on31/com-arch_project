@@ -4,7 +4,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         // String exampleInst = "add 1 0 5";
-        String exampleInst1 = "lw 0 1 five";
+        String exampleInst1 = "lw 0 1 five";//lw rt rs imm
         Assembler asb = new Assembler();
         System.out.println();
 
