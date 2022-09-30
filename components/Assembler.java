@@ -129,28 +129,32 @@ public class Assembler {
 
     public void convert(String[] result) throws Exception {
         if (result[1].equals("lw")) { // case lw I-type
-            long r1 = Long.parseLong(String.valueOf(result[2]));
-            long r2 = Long.parseLong(String.valueOf(result[3]));
-            long r3 = 5;
-            String rd = Long.toBinaryString(r1);
-            String rs1 = Long.toBinaryString(r2);
+            long rS = Long.parseLong(String.valueOf(result[2]));
+            long rD = Long.parseLong(String.valueOf(result[3]));
+            long r3 = 7;
+            String rd = Long.toBinaryString(rD);
+            String rs = Long.toBinaryString(rS);
             String imm = Long.toBinaryString(r3);
             do {
                 rd = "0" + rd;
-            } while (rd.length() < 5); // Check rd bit
+            } while (rd.length() < 3); // Check rd bit
             do {
-                rs1 = "0" + rs1;
-            } while (rs1.length() < 5); // Check rs1 bit
+                rs = "0" + rs;
+            } while (rs.length() < 3); // Check rs1 bit
             do {
                 imm = "0" + imm;
-            } while (imm.length() < 12); // Check imm bit
+            } while (imm.length() < 16); // Check imm bit
+
             System.out.println("");
             System.out.println("Ins : " + result[1]);
+            System.out.println("rs : " + rs);
             System.out.println("rd : " + rd);
-            System.out.println("rs1 : " + rs1);
             System.out.println("imm : " + imm);
-            String temp = imm + rs1 + "010" + rd + "0000011";
-
+            String temp = "010" + rs + rd + imm;
+            do {
+            temp = "0" + temp;
+            } while (temp.length() < 32);
+            System.out.println(binarytodeciaml(temp));
         } else if(result[1].equals("add")){ //R-type
             long r1 = Long.parseLong(String.valueOf(result[2])); //rs1
             long r2 = Long.parseLong(String.valueOf(result[3])); //rs2
