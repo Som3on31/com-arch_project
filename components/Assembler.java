@@ -131,7 +131,7 @@ public class Assembler {
         if (result[1].equals("lw")) { // case lw I-type
             long rS = Long.parseLong(String.valueOf(result[2]));
             long rD = Long.parseLong(String.valueOf(result[3]));
-            long r3 = 7;
+            long r3 = 3;
             String rd = Long.toBinaryString(rD);
             String rs = Long.toBinaryString(rS);
             String imm = Long.toBinaryString(r3);
