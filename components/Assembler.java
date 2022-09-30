@@ -183,7 +183,34 @@ public class Assembler {
             System.out.println("rs1 : " + rs);//bit 21-19
             System.out.println("rs2 : " + rt);// bit 18-16 
             String temp = "0000000"+"000"+rs+rt+"0000000000000"+rd;
-            System.out.println(binarytodeciaml(temp));
+        }else if(result[1].equals("nand")){ //R-type
+            long r1 = Long.parseLong(String.valueOf(result[2])); //rs1
+            long r2 = Long.parseLong(String.valueOf(result[3])); //rs2
+            long r3 = Long.parseLong(String.valueOf(result[4])); //rd 
+            String rd = Long.toBinaryString(r3);//destReg
+            String rs = Long.toBinaryString(r1); //reg A
+            String rt = Long.toBinaryString(r2); //reg B
+            if(rd.length() < 3){
+                do {
+                    rd = "0" + rd;
+                } while (rd.length() < 3); // Check rd bit
+            }
+            if(rs.length() < 3){
+                do {
+                    rs = "0" + rs;
+                } while (rs.length() < 3); // Check rs1 bit
+            }
+            if(rt.length() < 3){
+                do {
+                    rt = "0" + rt;
+                } while (rt.length() < 3); // Check rs2 bit
+            }
+            System.out.println("");
+            System.out.println("Ins : " + result[1]);
+            System.out.println("rd : " + rd); //bit 0-2
+            System.out.println("rs1 : " + rs);//bit 21-19
+            System.out.println("rs2 : " + rt);// bit 18-16 
+            String temp = "0000000"+"001"+rs+rt+"0000000000000"+rd;
         }
         else {
             System.out.println("error");
