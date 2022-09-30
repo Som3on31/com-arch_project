@@ -152,7 +152,7 @@ public class Assembler {
             System.out.println("imm : " + imm);
             String temp = imm + rs1 + "010" + rd + "0000011";
 
-        } else if(result[1].equals("add")){
+        } else if(result[1].equals("add")){ //R-type
             long r1 = Long.parseLong(String.valueOf(result[2]));
             long r2 = Long.parseLong(String.valueOf(result[3]));
             long r3 = Long.parseLong(String.valueOf(result[4]));
