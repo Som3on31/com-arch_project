@@ -44,7 +44,7 @@ public class Assembler {
         return converted;
     }
     public long binarytodeciaml (String binary)throws Exception{
-        String check = binary.substring(0,1);
+        String check = binary.substring(14,15);
         long decimal = 0; 
 
         if(check=="1" && binary.length() == 32){
@@ -78,7 +78,7 @@ public class Assembler {
                      }  
                   }
                   decimal -= decimal*2;
-        }else{
+        }else if (binary.length() == 32){
             String str1 = binary.substring(0, 16);//bit16-32
             String str2 = binary.substring(16, 32);//bit0-16
             long binaryString=Long.parseLong(str2);//bit0-16
@@ -106,6 +106,8 @@ public class Assembler {
               }  
            }
 
+        }else{
+            System.out.println("error");
         }  
         
         return decimal;
@@ -149,11 +151,31 @@ public class Assembler {
             System.out.println("rs1 : " + rs1);
             System.out.println("imm : " + imm);
             String temp = imm + rs1 + "010" + rd + "0000011";
-            System.out.println(temp);
-            System.out.println(binarytodeciaml(temp));
-            System.out.println(decimaltohexadecimal(binarytodeciaml(temp)));
 
-        } else {
+        } else if(result[1].equals("add")){
+            long r1 = Long.parseLong(String.valueOf(result[2]));
+            long r2 = Long.parseLong(String.valueOf(result[3]));
+            long r3 = Long.parseLong(String.valueOf(result[4]));
+            String rd = Long.toBinaryString(r1);
+            String rs1 = Long.toBinaryString(r2);
+            String imm = Long.toBinaryString(r3);
+            do {
+                rd = "0" + rd;
+            } while (rd.length() < 5); // Check rd bit
+            do {
+                rs1 = "0" + rs1;
+            } while (rs1.length() < 5); // Check rs1 bit
+            do {
+                imm = "0" + imm;
+            } while (imm.length() < 12); // Check imm bit
+            System.out.println("");
+            System.out.println("Ins : " + result[1]);
+            System.out.println("rd : " + rd);
+            System.out.println("rs1 : " + rs1);
+            System.out.println("imm : " + imm);
+            String temp = imm + rs1 + "010" + rd + "0000011";
+        }
+        else {
             System.out.println("error");
         }
     }
