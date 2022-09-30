@@ -3,14 +3,19 @@ import components.Assembler;
 public class Test {
 
     public static void main(String[] args) throws Exception {
+<<<<<<< HEAD
         // String exampleInst = "add 1 0 5";
         String exampleInst1 = "lw 0 1 five";//lw rt rs imm
+=======
+        String exampleInst = "add 1 2 1";
+        //String exampleInst1 = "lw 0 1 five";
+>>>>>>> 731c62790e04bb5c4ebf445f5f5df2777eb12f0f
         Assembler asb = new Assembler();
         System.out.println();
 
         String[] result;
         try {
-            result = asb.separate(exampleInst1);
+            result = asb.separate(exampleInst);
             for (String word : result) {
                 if (word == null)
                     continue;
