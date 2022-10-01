@@ -1,7 +1,7 @@
 package components;
 
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Simulator {
@@ -10,7 +10,7 @@ public class Simulator {
     int[] instCodeBin = new int[Short.MAX_VALUE];
 
     int[] registers = new int[8];
-    LinkedList<String> savedLabels; // save all label's positions
+    HashMap<String, Integer> savedLabels; // save all label's positions
 
     // private void instCode(){
 
@@ -30,7 +30,6 @@ public class Simulator {
 
         s.nextLine();
 
-        
         // TODO separate all inst codes into parts then convert them into binary and hex
         // address
 
