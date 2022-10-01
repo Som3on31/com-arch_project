@@ -20,7 +20,7 @@ public class Test {
 
         // String exampleInst = "add 1 0 5";
         String exampleInst1 = "lw 1 2 3";// lw rt rs imm
-        String exampleInst = "add 1 2 1";
+        // String exampleInst = "add 1 2 1";
         // String exampleInst1 = "lw 0 1 five";
         Assembler asb = new Assembler();
         System.out.println();

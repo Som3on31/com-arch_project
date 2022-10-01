@@ -43,88 +43,95 @@ public class Assembler {
         s.close();
         return converted;
     }
-    public long binarytodeciaml (String binary)throws Exception{
-        String check = binary.substring(14,15);
-        long decimal = 0; 
 
-        if(check=="1"  ){
-            int a=0;
+    public long binarytodeciaml(String binary) throws Exception {
+        String check = binary.substring(14, 15);
+        long decimal = 0;
+
+        if (check == "1") {
+            int a = 0;
             StringBuilder builder = new StringBuilder();
 
-                for (int i = 0; i < binary.length(); i++) {builder.append((binary.charAt(i) == '1' ? '0' : '1'));}
-                String str1 = builder.substring(0, 16);//bit16-32
-                String str2 = builder.substring(16, 32);//bit0-16
-                long binaryString=Long.parseLong(str2);//bit0-16
-                long binaryString1=Long.parseLong(str1); //bit16-32
+            for (int i = 0; i < binary.length(); i++) {
+                builder.append((binary.charAt(i) == '1' ? '0' : '1'));
+            }
+            String str1 = builder.substring(0, 16);// bit16-32
+            String str2 = builder.substring(16, 32);// bit0-16
+            long binaryString = Long.parseLong(str2);// bit0-16
+            long binaryString1 = Long.parseLong(str1); // bit16-32
 
-                //bit0-16//
-                while(true){  
-                    if(binaryString == 0){  break;  } 
-                    else {  
-                        long temp = binaryString%10;  
-                        decimal += temp*Math.pow(2, a);  
-                        binaryString = binaryString/10;  
-                        a++;  
-                     }  
-                  }  
-                  //bit16-32//
-                  int b=16;
-                  while(true){  
-                    if(binaryString1 == 0){  break;  } 
-                    else {  
-                        long temp = binaryString1%10;  
-                        decimal += temp*Math.pow(2, b);  
-                        binaryString1 = binaryString1/10;  
-                        a++;  
-                     }  
-                  }
-                  decimal -= decimal*2;
-        }else {
-            String str1 = binary.substring(0, 16);//bit16-32
-            String str2 = binary.substring(16, 32);//bit0-16
-            long binaryString=Long.parseLong(str2);//bit0-16
-            long binaryString1=Long.parseLong(str1); //bit16-32
-            ////// 0-16 bit //////////    
-           int n = 0;  
-           while(true){  
-             if(binaryString == 0){  break;  } 
-             else {  
-                 long temp = binaryString%10;  
-                 decimal += temp*Math.pow(2, n);  
-                 binaryString = binaryString/10;  
-                 n++;  
-              }  
-           }  
-           /////////////// 16 bit -32 bit//////////
-           int m=16;
-           while(true){  
-             if(binaryString1 == 0){  break;  } 
-             else {  
-                 long temp = binaryString1%10;  
-                 decimal += temp*Math.pow(2, m);  
-                 binaryString1 = binaryString1/10;  
-                 m++;  
-              }  
-           }
+            // bit0-16//
+            while (true) {
+                if (binaryString == 0) {
+                    break;
+                } else {
+                    long temp = binaryString % 10;
+                    decimal += temp * Math.pow(2, a);
+                    binaryString = binaryString / 10;
+                    a++;
+                }
+            }
+            // bit16-32//
+            int b = 16;
+            while (true) {
+                if (binaryString1 == 0) {
+                    break;
+                } else {
+                    long temp = binaryString1 % 10;
+                    decimal += temp * Math.pow(2, b);
+                    binaryString1 = binaryString1 / 10;
+                    a++;
+                }
+            }
+            decimal -= decimal * 2;
+        } else {
+            String str1 = binary.substring(0, 16);// bit16-32
+            String str2 = binary.substring(16, 32);// bit0-16
+            long binaryString = Long.parseLong(str2);// bit0-16
+            long binaryString1 = Long.parseLong(str1); // bit16-32
+            ////// 0-16 bit //////////
+            int n = 0;
+            while (true) {
+                if (binaryString == 0) {
+                    break;
+                } else {
+                    long temp = binaryString % 10;
+                    decimal += temp * Math.pow(2, n);
+                    binaryString = binaryString / 10;
+                    n++;
+                }
+            }
+            /////////////// 16 bit -32 bit//////////
+            int m = 16;
+            while (true) {
+                if (binaryString1 == 0) {
+                    break;
+                } else {
+                    long temp = binaryString1 % 10;
+                    decimal += temp * Math.pow(2, m);
+                    binaryString1 = binaryString1 / 10;
+                    m++;
+                }
+            }
 
         }
-        
+
         return decimal;
     }
 
-    public String decimaltohexadecimal (long decimal) throws Exception{
-        int d=(int) decimal;
-        int rem;  
-        String hex="";   
-        char hexchars[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};  
-        while(d>0){  
-            rem=d%16;   
-            hex=hexchars[rem]+hex;   
-            d=d/16;  
+    public String decimaltohexadecimal(long decimal) throws Exception {
+        int d = (int) decimal;
+        int rem;
+        String hex = "";
+        char hexchars[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        while (d > 0) {
+            rem = d % 16;
+            hex = hexchars[rem] + hex;
+            d = d / 16;
             rem++;
-        }  
-        
-        return hex;  
+        }
+
+        return hex;
     }
 
     public void convert(String[] result) throws Exception {
@@ -152,40 +159,39 @@ public class Assembler {
             System.out.println("imm : " + imm);
             String temp = "010" + rs + rd + imm;
             do {
-            temp = "0" + temp;
+                temp = "0" + temp;
             } while (temp.length() < 32);
             System.out.println(binarytodeciaml(temp));
-        } else if(result[1].equals("add")){ //R-type
-            long r1 = Long.parseLong(String.valueOf(result[2])); //rs1
-            long r2 = Long.parseLong(String.valueOf(result[3])); //rs2
-            long r3 = Long.parseLong(String.valueOf(result[4])); //rd 
-            String rd = Long.toBinaryString(r3);//destReg
-            String rs = Long.toBinaryString(r1); //reg A
-            String rt = Long.toBinaryString(r2); //reg B
-            if(rd.length() < 3){
+        } else if (result[1].equals("add")) { // R-type
+            long r1 = Long.parseLong(String.valueOf(result[2])); // rs1
+            long r2 = Long.parseLong(String.valueOf(result[3])); // rs2
+            long r3 = Long.parseLong(String.valueOf(result[4])); // rd
+            String rd = Long.toBinaryString(r3);// destReg
+            String rs = Long.toBinaryString(r1); // reg A
+            String rt = Long.toBinaryString(r2); // reg B
+            if (rd.length() < 3) {
                 do {
                     rd = "0" + rd;
                 } while (rd.length() < 3); // Check rd bit
             }
-            if(rs.length() < 3){
+            if (rs.length() < 3) {
                 do {
                     rs = "0" + rs;
                 } while (rs.length() < 3); // Check rs1 bit
             }
-            if(rt.length() < 3){
+            if (rt.length() < 3) {
                 do {
                     rt = "0" + rt;
                 } while (rt.length() < 3); // Check rs2 bit
             }
             System.out.println("");
             System.out.println("Ins : " + result[1]);
-            System.out.println("rd : " + rd); //bit 0-2
-            System.out.println("rs1 : " + rs);//bit 21-19
-            System.out.println("rs2 : " + rt);// bit 18-16 
-            String temp = "0000000"+"000"+rs+rt+"0000000000000"+rd;
+            System.out.println("rd : " + rd); // bit 0-2
+            System.out.println("rs1 : " + rs);// bit 21-19
+            System.out.println("rs2 : " + rt);// bit 18-16
+            String temp = "0000000" + "000" + rs + rt + "0000000000000" + rd;
             System.out.println(binarytodeciaml(temp));
-        }
-        else {
+        } else {
             System.out.println("error");
         }
     }
