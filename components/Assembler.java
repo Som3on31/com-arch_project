@@ -1,5 +1,6 @@
 package components;
 
+import java.util.Map;
 import java.util.Scanner;
 
 // import components.subcomponents.*;
@@ -134,38 +135,33 @@ public class Assembler {
         return hex;
     }
 
-    public void convert(String[] result) throws Exception {
-        if (result[1].equals("lw")) { // case lw I-type
-            long rS = Long.parseLong(String.valueOf(result[2]));
-            long rD = Long.parseLong(String.valueOf(result[3]));
-            long r3 = 3;
-            String rd = Long.toBinaryString(rD);
-            String rs = Long.toBinaryString(rS);
-            String imm = Long.toBinaryString(r3);
-            do {
-                rd = "0" + rd;
-            } while (rd.length() < 3); // Check rd bit
-            do {
-                rs = "0" + rs;
-            } while (rs.length() < 3); // Check rs1 bit
-            do {
-                imm = "0" + imm;
-            } while (imm.length() < 16); // Check imm bit
-
-            System.out.println("");
-            System.out.println("Ins : " + result[1]);
-            System.out.println("rs : " + rs);
-            System.out.println("rd : " + rd);
-            System.out.println("imm : " + imm);
-            String temp = "010" + rs + rd + imm;
-            do {
-                temp = "0" + temp;
-            } while (temp.length() < 32);
-            System.out.println(binarytodeciaml(temp));
-        } else if (result[1].equals("add")) { // R-type
-            long r1 = Long.parseLong(String.valueOf(result[2])); // rs1
-            long r2 = Long.parseLong(String.valueOf(result[3])); // rs2
-            long r3 = Long.parseLong(String.valueOf(result[4])); // rd
+    /**
+     * 
+     * 
+     * 
+     * @param instParts an instruction divided into parts
+     * @param labels    A map of saved labels from instruction separation
+     * @throws Exception When this function detects any undefined type
+     */
+    public void convert(String[] instParts, Map<String, Integer> labels) throws Exception {
+        String result;
+        String type;
+        switch (instParts[1]) {
+            case "add" -> type = "010";
+            case "nand" -> type = "001";
+            case "lw" -> type = "010";
+            case "sw" -> type = "011";
+            case "beq" -> type = "100";
+            case "jalr" -> type = "101";
+            case "halt" -> type = "110";
+            case "noop" -> type = "111";
+            case ".fill" -> type = "E"; // won't be used for result, but as a placeholder and because it's E
+            default -> throw new Exception("Undefined type");
+        }
+        if (isRtype(instParts[1])) {
+            long r1 = Long.parseLong(String.valueOf(instParts[2])); // rs1
+            long r2 = Long.parseLong(String.valueOf(instParts[3])); // rs2
+            long r3 = Long.parseLong(String.valueOf(instParts[4])); // rd
             String rd = Long.toBinaryString(r3);// destReg
             String rs = Long.toBinaryString(r1); // reg A
             String rt = Long.toBinaryString(r2); // reg B
@@ -185,15 +181,46 @@ public class Assembler {
                 } while (rt.length() < 3); // Check rs2 bit
             }
             System.out.println("");
-            System.out.println("Ins : " + result[1]);
+            System.out.println("Ins : " + instParts[1]);
             System.out.println("rd : " + rd); // bit 0-2
             System.out.println("rs1 : " + rs);// bit 21-19
             System.out.println("rs2 : " + rt);// bit 18-16
-            String temp = "0000000" + "000" + rs + rt + "0000000000000" + rd;
-            System.out.println(binarytodeciaml(temp));
-        } else {
-            System.out.println("error");
-        }
+            result = "0000000" + type + rs + rt + "0000000000000" + rd;
+            System.out.println(binarytodeciaml(result));
+        } else if (isItype(instParts[1])) { // case lw I-type
+            long rS = Long.parseLong(String.valueOf(instParts[2]));
+            long rD = Long.parseLong(String.valueOf(instParts[3]));
+            long r3 = isNumber(instParts[4]) ? Long.parseLong(String.valueOf(instParts[4]))
+                    : instParts[1].equals("beq") ? labels.get(instParts[4]) - 5 : labels.get(instParts[4]);
+            String rd = Long.toBinaryString(rD);
+            String rs = Long.toBinaryString(rS);
+            String imm = Long.toBinaryString(r3);
+            do {
+                rd = "0" + rd;
+            } while (rd.length() < 3); // Check rd bit
+            do {
+                rs = "0" + rs;
+            } while (rs.length() < 3); // Check rs1 bit
+            do {
+                imm = "0" + imm;
+            } while (imm.length() < 16); // Check imm bit
+
+            System.out.println("");
+            System.out.println("Ins : " + instParts[1]);
+            System.out.println("rs : " + rs);
+            System.out.println("rd : " + rd);
+            System.out.println("imm : " + imm);
+            result = type + rs + rd + imm;
+            do {
+                result = "0" + result;
+            } while (result.length() < 32);
+            System.out.println(binarytodeciaml(result));
+        } else if (isJtype(instParts[1])) {
+
+        } else if (isOtype(instParts[1])) {
+
+        } else
+            throw new Exception("Unknown error");
     }
 
     // Type check
@@ -225,6 +252,15 @@ public class Assembler {
     private boolean isFill(String word) {
         word = word.toLowerCase();
         return word.equals(".fill");
+    }
+
+    private boolean isNumber(String word) {
+        for (char c : word.toCharArray()) {
+            if (c != '0' || c != '1' || c != '2' || c != '3' || c != '4' || c != '5' || c != '6' || c != '7' || c != '8'
+                    || c != '9')
+                return false;
+        }
+        return true;
     }
 
 }
