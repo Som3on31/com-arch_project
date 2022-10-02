@@ -14,6 +14,8 @@ public class Simulator {
     long[] registers;
     HashMap<String, Integer> savedLabels; // save all label's positions
 
+    private String[][] instInParts;
+
     // private void instCode(){
 
     // }
@@ -44,7 +46,7 @@ public class Simulator {
                 instCount++;
             }
 
-            saveAllLabels(filedesc, asb);
+            saveAllLabelsAndSeparateCode(instCode, asb);
 
             s.close();
         } catch (Exception e) {
@@ -81,41 +83,31 @@ public class Simulator {
      * By Saharit Kadkasem
      * </p>
      * 
-     * @param filedesc a file destination
+     * @param instCode An array of instruction code
      * @param asb      An assembler
+     * @return
      * @throws Exception If any duplicate label or any illegally defined label (e.g.
      *                   length greater than 6) is found
      */
-    private void saveAllLabels(String filedesc, Assembler asb) throws Exception {
+    private String[][] saveAllLabelsAndSeparateCode(String[] instCode, Assembler asb) throws Exception {
         int instCount = 0;
+        instInParts = new String[instCode.length][5];
+        for (int i = 0; i < instCode.length; i++) {
+            instInParts[i] = asb.separate(instCode[i]);
 
-        Scanner fileScanner = new Scanner(filedesc);
-
-        String current = fileScanner.nextLine();
-        while (true) {
-            System.out.println(current);
-            String[] instInParts = asb.separate(current);
-
-            if (instInParts[0] != null) {
-                if (savedLabels.containsKey(instInParts[0]))
+            if (instInParts[i][0] != null) {
+                if (savedLabels.containsKey(instInParts[i][0]))
                     throw new Exception("Duplicate label");
 
-                if (instInParts[0].length() <= 6)
-                    savedLabels.put(instInParts[0], instCount);
+                if (instInParts[i][0].length() <= 6)
+                    savedLabels.put(instInParts[i][0], instCount);
                 else {
                     throw new Exception("Labels must not be longer than 6 characters.");
                 }
             }
-
-            if (!fileScanner.hasNext()) {
-                fileScanner.close();
-                break;
-            }
-            current = fileScanner.nextLine();
-            instCount++;
         }
-        fileScanner.close();
 
+        return instInParts;
         // Printout debugging only
         // for (Map.Entry<String, Integer> e : savedLabels.entrySet()) {
         // System.out.println("Label: " + e.getKey() + " val: " + e.getValue());
