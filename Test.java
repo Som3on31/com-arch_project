@@ -11,7 +11,9 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
         // String exampleInst1 = "lw 1 2 3";// lw rt rs imm
-        String exampleInst1 = "beq 0 1 2";
+        // String exampleInst1 = "beq 0 1 2";
+        // String exampleInst1 = ".fill 5";
+        String exampleInst1 = ".fill -1";
         // String exampleInst1 = "end halt";
         // String exampleInst1 = "jalr 4 2";
 
