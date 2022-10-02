@@ -20,6 +20,8 @@ public class Assembler {
     public String[] separate(String instCode) throws Exception {
         String[] converted = new String[5]; // {label,inst,rs,rt,field} except for .fill,it will be
                                             // {label,inst,num/sign,null,null}
+                                            // in the case of jalr, it's {label,inst,num,num,null}
+                                            // label can be null but never a dupe of one another
 
         Scanner s = new Scanner(instCode);
         String current = s.next();
@@ -143,7 +145,7 @@ public class Assembler {
      * @param labels    A map of saved labels from instruction separation
      * @throws Exception When this function detects any undefined type
      */
-    public void convert(String[] instParts, Map<String, Integer> labels) throws Exception {
+    public void convert(String[] instParts, Map<String, Integer> labels, int pc) throws Exception {
         String result;
         String type;
         switch (instParts[1]) {
@@ -165,21 +167,9 @@ public class Assembler {
             String rd = Long.toBinaryString(r3);// destReg
             String rs = Long.toBinaryString(r1); // reg A
             String rt = Long.toBinaryString(r2); // reg B
-            if (rd.length() < 3) {
-                do {
-                    rd = "0" + rd;
-                } while (rd.length() < 3); // Check rd bit
-            }
-            if (rs.length() < 3) {
-                do {
-                    rs = "0" + rs;
-                } while (rs.length() < 3); // Check rs1 bit
-            }
-            if (rt.length() < 3) {
-                do {
-                    rt = "0" + rt;
-                } while (rt.length() < 3); // Check rs2 bit
-            }
+            rd = toXBits(rd, 3);
+            rs = toXBits(rs, 3);
+            rt = toXBits(rt, 3);
             System.out.println("");
             System.out.println("Ins : " + instParts[1]);
             System.out.println("rd : " + rd); // bit 0-2
@@ -190,20 +180,14 @@ public class Assembler {
         } else if (isItype(instParts[1])) { // case lw I-type
             long rS = Long.parseLong(String.valueOf(instParts[2]));
             long rD = Long.parseLong(String.valueOf(instParts[3]));
-            long r3 = isNumber(instParts[4]) ? Long.parseLong(String.valueOf(instParts[4]))
-                    : instParts[1].equals("beq") ? labels.get(instParts[4]) - 5 : labels.get(instParts[4]);
+            long offsetField = isNumber(instParts[4]) ? Long.parseLong(String.valueOf(instParts[4]))
+                    : instParts[1].equals("beq") ? labels.get(instParts[4]) - pc - 1 : labels.get(instParts[4]);
             String rd = Long.toBinaryString(rD);
             String rs = Long.toBinaryString(rS);
-            String imm = Long.toBinaryString(r3);
-            do {
-                rd = "0" + rd;
-            } while (rd.length() < 3); // Check rd bit
-            do {
-                rs = "0" + rs;
-            } while (rs.length() < 3); // Check rs1 bit
-            do {
-                imm = "0" + imm;
-            } while (imm.length() < 16); // Check imm bit
+            String imm = Long.toBinaryString(offsetField);
+            rd = toXBits(rd, 3); // Check rd bit
+            rs = toXBits(rs, 3); // Check rs1 bit
+            imm = toXBits(imm, 16); // Check imm bit
 
             System.out.println("");
             System.out.println("Ins : " + instParts[1]);
@@ -216,9 +200,40 @@ public class Assembler {
             } while (result.length() < 32);
             System.out.println(binarytodeciaml(result));
         } else if (isJtype(instParts[1])) {
+            long rS = Long.parseLong(String.valueOf(instParts[2]));
+            long rD = Long.parseLong(String.valueOf(instParts[3]));
 
+            String rs = Long.toBinaryString(rS);
+            String rd = Long.toBinaryString(rD);
+            rs = toXBits(rs, 3);
+            rd = toXBits(rd, 3);
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 32; i > 0; i--) {
+                if (i == 25) {
+                    i = 17;
+                    sb.append(type);
+                    sb.append(rs);
+                    sb.append(rd);
+                    continue;
+                }
+                sb.append('0');
+            }
+            result = sb.toString();
+            System.out.println(binarytodeciaml(result));
         } else if (isOtype(instParts[1])) {
-
+            StringBuilder sb = new StringBuilder();
+            for (int i = 32; i > 0; i--) {
+                if (i == 25) {
+                    i = 23;
+                    sb.append(type);
+                    continue;
+                }
+                sb.append('0');
+            }
+            result = sb.toString();
+            System.out.println(binarytodeciaml(result));
         } else
             throw new Exception("Unknown error");
     }
@@ -241,7 +256,7 @@ public class Assembler {
 
     private boolean isJtype(String word) {
         word = word.toLowerCase();
-        return word.equals("jal");
+        return word.equals("jalr");
     }
 
     private boolean isOtype(String word) {
@@ -256,11 +271,26 @@ public class Assembler {
 
     private boolean isNumber(String word) {
         for (char c : word.toCharArray()) {
-            if (c != '0' || c != '1' || c != '2' || c != '3' || c != '4' || c != '5' || c != '6' || c != '7' || c != '8'
-                    || c != '9')
+            if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7'
+                    || c == '8'
+                    || c == '9'))
                 return false;
         }
         return true;
+    }
+
+    /**
+     * Fill 0 before the most significant bit until it reaches a specific number
+     * 
+     * @param bits      a string converted into binary
+     * @param numOfBits a number of requited bits
+     * @return a string bit that has been modified
+     */
+    private String toXBits(String bits, int numOfBits) {
+        while (bits.length() < numOfBits) {
+            bits = "0" + bits;
+        }
+        return bits;
     }
 
 }
