@@ -164,12 +164,14 @@ public class Assembler {
             long r1 = Long.parseLong(String.valueOf(instParts[2])); // rs1
             long r2 = Long.parseLong(String.valueOf(instParts[3])); // rs2
             long r3 = Long.parseLong(String.valueOf(instParts[4])); // rd
+
             String rd = Long.toBinaryString(r3);// destReg
             String rs = Long.toBinaryString(r1); // reg A
             String rt = Long.toBinaryString(r2); // reg B
             rd = toXBits(rd, 3);
             rs = toXBits(rs, 3);
             rt = toXBits(rt, 3);
+
             System.out.println("");
             System.out.println("Ins : " + instParts[1]);
             System.out.println("rd : " + rd); // bit 0-2
@@ -182,6 +184,7 @@ public class Assembler {
             long rD = Long.parseLong(String.valueOf(instParts[3]));
             long offsetField = isNumber(instParts[4]) ? Long.parseLong(String.valueOf(instParts[4]))
                     : instParts[1].equals("beq") ? labels.get(instParts[4]) - pc - 1 : labels.get(instParts[4]);
+
             String rd = Long.toBinaryString(rD);
             String rs = Long.toBinaryString(rS);
             String imm = Long.toBinaryString(offsetField);
@@ -234,14 +237,25 @@ public class Assembler {
             }
             result = sb.toString();
             System.out.println(binarytodeciaml(result));
+        } else if (isFill(instParts[1])) {
+            long valInt = Long.parseLong(instParts[2]);
+            String val = Long.toBinaryString(valInt);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 32; i > val.length(); i--) {
+                sb.append('0');
+            }
+            sb.append(val);
+            result = sb.toString();
+            System.out.println(binarytodeciaml(result));
         } else
-            throw new Exception("Unknown error");
+            throw new Exception("Type currently not supported at the moment");
     }
 
     // Type check
     private boolean isInst(String word) {
         word = word.toLowerCase();
-        return isRtype(word) || isItype(word) || isJtype(word) || isOtype(word);
+        return isRtype(word) || isItype(word) || isJtype(word) || isOtype(word) || isFill(word);
     }
 
     private boolean isRtype(String word) {
