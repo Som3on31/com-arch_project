@@ -287,37 +287,37 @@ public class Assembler {
 
     // ------------------------------ All utilities methods go
     // here---------------------------------
-    private boolean isInst(String word) {
+    protected static boolean isInst(String word) {
         word = word.toLowerCase();
         return isRtype(word) || isItype(word) || isJtype(word) || isOtype(word) || isFill(word);
     }
 
-    private boolean isRtype(String word) {
+    protected static boolean isRtype(String word) {
         word = word.toLowerCase();
         return word.equals("add") || word.equals("nand");
     }
 
-    private boolean isItype(String word) {
+    protected static boolean isItype(String word) {
         word = word.toLowerCase();
         return word.equals("lw") || word.equals("sw") || word.equals("beq");
     }
 
-    private boolean isJtype(String word) {
+    protected static boolean isJtype(String word) {
         word = word.toLowerCase();
         return word.equals("jalr");
     }
 
-    private boolean isOtype(String word) {
+    protected static boolean isOtype(String word) {
         word = word.toLowerCase();
         return word.equals("halt") || word.equals("noop");
     }
 
-    private boolean isFill(String word) {
+    protected static boolean isFill(String word) {
         word = word.toLowerCase();
         return word.equals(".fill");
     }
 
-    private boolean isNumber(String word) {
+    protected static boolean isNumber(String word) {
         for (char c : word.toCharArray()) {
             if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7'
                     || c == '8'
