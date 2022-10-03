@@ -156,7 +156,7 @@ public class Assembler {
         String result;
         String type;
         switch (instParts[1]) {
-            case "add" -> type = "010";
+            case "add" -> type = "000";
             case "nand" -> type = "001";
             case "lw" -> type = "010";
             case "sw" -> type = "011";
