@@ -1,5 +1,7 @@
 package components;
 
+import java.io.FileWriter;
+import java.io.File;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -48,7 +50,7 @@ public class Assembler {
     }
 
     public long binarytodeciaml(String binary) throws Exception {
-        String check = binary.substring(14, 15);
+        String c = binary.substring(14, 15);
         long decimal = 0;
         long check = Long.parseLong(c);
 
@@ -150,7 +152,7 @@ public class Assembler {
      * @param labels    A map of saved labels from instruction separation
      * @throws Exception When this function detects any undefined type
      */
-    public void convert(String[] instParts, Map<String, Integer> labels, int pc) throws Exception {
+    public String convert(String[] instParts, Map<String, Integer> labels, int pc) throws Exception {
         String result;
         String type;
         switch (instParts[1]) {
@@ -256,9 +258,35 @@ public class Assembler {
             System.out.println(binarytodeciaml(result));
         } else
             throw new Exception("Type currently not supported at the moment");
+
+        return result;
     }
 
-    // Type check
+    public void massConvert(String[] inst, Map<String, Integer> labels, int pc) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (int i = 0; i < inst.length; i++) {
+                if (inst[i] == null)
+                    break;
+
+                String instBin = convert(separate(inst[i]), labels, pc);
+                sb.append(instBin);
+                sb.append("\n");
+            }
+
+            File file = new File("./machine_code/mc1.txt");
+            file.createNewFile();
+            FileWriter fw = new FileWriter(file);
+            fw.write(sb.toString());
+            fw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // ------------------------------ All utilities methods go
+    // here---------------------------------
     private boolean isInst(String word) {
         word = word.toLowerCase();
         return isRtype(word) || isItype(word) || isJtype(word) || isOtype(word) || isFill(word);
