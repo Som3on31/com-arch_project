@@ -50,7 +50,7 @@ public class Assembler {
     }
 
     public long binarytodeciaml(String binary) throws Exception {
-        String c = binary.substring(14, 15);
+        String c = binary.substring(0, 1);
         long decimal = 0;
         long check = Long.parseLong(c);
 
@@ -185,6 +185,7 @@ public class Assembler {
             System.out.println("rs1 : " + rs);// bit 21-19
             System.out.println("rs2 : " + rt);// bit 18-16
             result = "0000000" + type + rs + rt + "0000000000000" + rd;
+            System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else if (isItype(instParts[1])) { // case lw I-type
             long rS = Long.parseLong(String.valueOf(instParts[2]));
@@ -208,6 +209,7 @@ public class Assembler {
             do {
                 result = "0" + result;
             } while (result.length() < 32);
+            System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else if (isJtype(instParts[1])) {
             long rS = Long.parseLong(String.valueOf(instParts[2]));
@@ -231,6 +233,7 @@ public class Assembler {
                 sb.append('0');
             }
             result = sb.toString();
+            System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else if (isOtype(instParts[1])) {
             StringBuilder sb = new StringBuilder();
@@ -243,6 +246,7 @@ public class Assembler {
                 sb.append('0');
             }
             result = sb.toString();
+            System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else if (isFill(instParts[1])) {
             int valInt = Integer.parseInt(instParts[2]);
@@ -254,7 +258,7 @@ public class Assembler {
             }
             sb.append(val);
             result = sb.toString();
-            // System.out.println(result);
+            System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else
             throw new Exception("Type currently not supported at the moment");
