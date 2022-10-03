@@ -11,7 +11,7 @@ public class Test {
         // String exampleInst1 = "lw 1 2 3";// lw rt rs imm
         // String exampleInst1 = "beq 0 1 2";
         // String exampleInst1 = ".fill 5";
-        // String exampleInst1 = ".fill -1";
+        String exampleInst1 = ".fill -100";
         // String exampleInst1 = "end halt";
         // String exampleInst1 = "jalr 4 2";
 
@@ -55,15 +55,15 @@ public class Test {
             // System.out.println("Label: " + e.getKey() + " val: " + e.getValue());
             // }
 
-            // String[] result = asb.separate(exampleInst1);
+            String[] result = asb.separate(exampleInst1);
 
-            // for (String word : result) {
-            // if (word == null)
-            // continue;
-            // System.out.println(word);
-            // }
+            for (String word : result) {
+                if (word == null)
+                    continue;
+                System.out.println(word);
+            }
 
-            // asb.convert(result, savedLabels, 0); // convert word to binary
+            asb.convert(result, savedLabels, 0); // convert word to binary
 
         } catch (Exception e) {
             e.printStackTrace();
