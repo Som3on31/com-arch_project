@@ -50,8 +50,9 @@ public class Assembler {
     public long binarytodeciaml(String binary) throws Exception {
         String check = binary.substring(14, 15);
         long decimal = 0;
+        long check = Long.parseLong(c);
 
-        if (check == "1") {
+        if (check == 1 && binary.length() == 32) {
             int a = 0;
             StringBuilder builder = new StringBuilder();
 
@@ -87,7 +88,9 @@ public class Assembler {
                 }
             }
             decimal -= decimal * 2;
-        } else {
+            decimal -= 1;
+        } else if (binary.length() == 32) {
+            System.out.println(binary);
             String str1 = binary.substring(0, 16);// bit16-32
             String str2 = binary.substring(16, 32);// bit0-16
             long binaryString = Long.parseLong(str2);// bit0-16
@@ -117,6 +120,8 @@ public class Assembler {
                 }
             }
 
+        } else {
+            System.out.println("bit less than 32 bit or bit more than 32 bit");
         }
 
         return decimal;
@@ -238,8 +243,8 @@ public class Assembler {
             result = sb.toString();
             System.out.println(binarytodeciaml(result));
         } else if (isFill(instParts[1])) {
-            long valInt = Long.parseLong(instParts[2]);
-            String val = Long.toBinaryString(valInt);
+            int valInt = Integer.parseInt(instParts[2]);
+            String val = Integer.toBinaryString(valInt);
 
             StringBuilder sb = new StringBuilder();
             for (int i = 32; i > val.length(); i--) {
@@ -247,6 +252,7 @@ public class Assembler {
             }
             sb.append(val);
             result = sb.toString();
+            // System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else
             throw new Exception("Type currently not supported at the moment");
