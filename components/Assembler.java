@@ -1,5 +1,7 @@
 package components;
 
+import java.io.FileWriter;
+import java.io.File;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -48,12 +50,11 @@ public class Assembler {
     }
 
     public long binarytodeciaml(String binary) throws Exception {
-        String c = binary.substring(0, 1);
+        String c = binary.substring(14, 15);
         long decimal = 0;
         long check = Long.parseLong(c);
-        
 
-        if (check == 1 && binary.length()==32) {
+        if (check == 1 && binary.length() == 32) {
             int a = 0;
             StringBuilder builder = new StringBuilder();
 
@@ -85,12 +86,12 @@ public class Assembler {
                     long temp = binaryString1 % 10;
                     decimal += temp * Math.pow(2, b);
                     binaryString1 = binaryString1 / 10;
-                    b++;
+                    a++;
                 }
             }
             decimal -= decimal * 2;
-            decimal-=1;
-        } else if(binary.length()==32){
+            decimal -= 1;
+        } else if (binary.length() == 32) {
             System.out.println(binary);
             String str1 = binary.substring(0, 16);// bit16-32
             String str2 = binary.substring(16, 32);// bit0-16
@@ -121,7 +122,7 @@ public class Assembler {
                 }
             }
 
-        }else{
+        } else {
             System.out.println("bit less than 32 bit or bit more than 32 bit");
         }
 
@@ -151,7 +152,7 @@ public class Assembler {
      * @param labels    A map of saved labels from instruction separation
      * @throws Exception When this function detects any undefined type
      */
-    public void convert(String[] instParts, Map<String, Integer> labels, int pc) throws Exception {
+    public String convert(String[] instParts, Map<String, Integer> labels, int pc) throws Exception {
         String result;
         String type;
         switch (instParts[1]) {
@@ -244,8 +245,8 @@ public class Assembler {
             result = sb.toString();
             System.out.println(binarytodeciaml(result));
         } else if (isFill(instParts[1])) {
-            long valInt = Long.parseLong(instParts[2]);
-            String val = Long.toBinaryString(valInt);
+            int valInt = Integer.parseInt(instParts[2]);
+            String val = Integer.toBinaryString(valInt);
 
             StringBuilder sb = new StringBuilder();
             for (int i = 32; i > val.length(); i--) {
@@ -253,44 +254,70 @@ public class Assembler {
             }
             sb.append(val);
             result = sb.toString();
-            //System.out.println(result);
+            // System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else
             throw new Exception("Type currently not supported at the moment");
+
+        return result;
     }
 
-    // Type check
-    private boolean isInst(String word) {
+    public void massConvert(String[] inst, Map<String, Integer> labels, int pc) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            for (int i = 0; i < inst.length; i++) {
+                if (inst[i] == null)
+                    break;
+
+                String instBin = convert(separate(inst[i]), labels, pc);
+                sb.append(instBin);
+                sb.append("\n");
+            }
+
+            File file = new File("./machine_code/mc1.txt");
+            file.createNewFile();
+            FileWriter fw = new FileWriter(file);
+            fw.write(sb.toString());
+            fw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // ------------------------------ All utilities methods go
+    // here---------------------------------
+    protected static boolean isInst(String word) {
         word = word.toLowerCase();
         return isRtype(word) || isItype(word) || isJtype(word) || isOtype(word) || isFill(word);
     }
 
-    private boolean isRtype(String word) {
+    protected static boolean isRtype(String word) {
         word = word.toLowerCase();
         return word.equals("add") || word.equals("nand");
     }
 
-    private boolean isItype(String word) {
+    protected static boolean isItype(String word) {
         word = word.toLowerCase();
         return word.equals("lw") || word.equals("sw") || word.equals("beq");
     }
 
-    private boolean isJtype(String word) {
+    protected static boolean isJtype(String word) {
         word = word.toLowerCase();
         return word.equals("jalr");
     }
 
-    private boolean isOtype(String word) {
+    protected static boolean isOtype(String word) {
         word = word.toLowerCase();
         return word.equals("halt") || word.equals("noop");
     }
 
-    private boolean isFill(String word) {
+    protected static boolean isFill(String word) {
         word = word.toLowerCase();
         return word.equals(".fill");
     }
 
-    private boolean isNumber(String word) {
+    protected static boolean isNumber(String word) {
         for (char c : word.toCharArray()) {
             if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7'
                     || c == '8'
