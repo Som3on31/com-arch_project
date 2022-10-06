@@ -196,6 +196,8 @@ public class Assembler {
             String rd = Long.toBinaryString(rD);
             String rs = Long.toBinaryString(rS);
             String imm = Long.toBinaryString(offsetField);
+            if (imm.length() > 16)
+                imm = imm.substring(imm.length() - 16);
             rd = toXBits(rd, 3); // Check rd bit
             rs = toXBits(rs, 3); // Check rs1 bit
             imm = toXBits(imm, 16); // Check imm bit
