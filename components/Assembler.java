@@ -146,11 +146,11 @@ public class Assembler {
 
     /**
      * 
-     * 
-     * 
-     * @param instParts an instruction divided into parts
-     * @param labels    A map of saved labels from instruction separation
-     * @throws Exception When this function detects any undefined type
+     * @param instParts An instruction that has been separated into parts
+     * @param labels    A map which contains the position of all saved labels
+     * @param pc        Current position where the simulator is reading
+     * @return A string of an instruction code
+     * @throws Exception
      */
     public String convert(String[] instParts, Map<String, Integer> labels, int pc) throws Exception {
         String result;
@@ -268,7 +268,9 @@ public class Assembler {
         return result;
     }
 
-    public void massConvert(String[] inst, Map<String, Integer> labels, int pc) {
+    public String[] massConvert(String[] inst, Map<String, Integer> labels, int pc) {
+        String[] instInBits = new String[inst.length];
+
         StringBuilder sb = new StringBuilder();
         try {
             for (int i = 0; i < inst.length; i++) {
@@ -277,6 +279,7 @@ public class Assembler {
 
                 String instBin = convert(separate(inst[i]), labels, pc);
                 sb.append(instBin);
+                instInBits[i] = instBin;
                 sb.append("\n");
             }
 
@@ -289,6 +292,7 @@ public class Assembler {
             e.printStackTrace();
         }
 
+        return instInBits;
     }
 
     // ------------------------------ All utilities methods go
