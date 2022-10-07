@@ -7,5 +7,6 @@
         add     0               3               eturn val
         noop
 stoppu  halt
-num     .fill   10000
+num     .fill   10000                           
+lob16  .fill    -65536                          
 bit15   .fill   32768                           for checking the sign bit when it's 16bit
