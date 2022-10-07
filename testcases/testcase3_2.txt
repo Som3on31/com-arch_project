@@ -1,0 +1,13 @@
+            
+        
+comb            
+        beq     0       0       1               if n = 0 or n = r
+        beq     0       2       somewhere
+
+
+
+stoppu  halt
+const1  .fill   1
+valN    .fill   7
+valR    .fill   3  
+stack   .fill   0                               exits to keep a number here

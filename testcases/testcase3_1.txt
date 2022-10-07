@@ -1,0 +1,13 @@
+        lw      0       1       mcand           load inputs
+        lw      0       2       mplier
+
+        jalr                                    jump to mul
+        
+stoppu  halt
+
+mul     
+
+mulAdr  .fill   mul
+mcand   .fill   5
+mplier  .fill   8
+stack   .fill   0
