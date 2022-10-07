@@ -92,7 +92,7 @@ public class Assembler {
             decimal -= decimal * 2;
             decimal -= 1;
         } else if (binary.length() == 32) {
-            System.out.println(binary);
+            // System.out.println(binary);
             String str1 = binary.substring(0, 16);// bit16-32
             String str2 = binary.substring(16, 32);// bit0-16
             long binaryString = Long.parseLong(str2);// bit0-16
@@ -251,7 +251,7 @@ public class Assembler {
             System.out.println(result);
             System.out.println(binarytodeciaml(result));
         } else if (isFill(instParts[1])) {
-            int valInt = Integer.parseInt(instParts[2]);
+            int valInt = isNumber(instParts[2]) ? Integer.parseInt(instParts[2]) : labels.get(instParts[2]);
             String val = Integer.toBinaryString(valInt);
 
             StringBuilder sb = new StringBuilder();
@@ -324,11 +324,19 @@ public class Assembler {
     }
 
     protected static boolean isNumber(String word) {
+        boolean neg = false;
+        int charCount = 0;
         for (char c : word.toCharArray()) {
             if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7'
-                    || c == '8'
-                    || c == '9'))
+                    || c == '8' || c == '9')) {
+                if (c == '-' && !neg && charCount == 0) {
+                    neg = true;
+                    continue;
+                }
+
                 return false;
+            }
+            charCount++;
         }
         return true;
     }
