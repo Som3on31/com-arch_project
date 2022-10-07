@@ -1,0 +1,11 @@
+        lw      0       1       num             load an input
+        lw      0       4       bit15           load const 16 bit
+
+        and     1       4       6               check 16th bit
+
+        beq     6       4       stoppu          
+        add     0               3               eturn val
+        noop
+stoppu  halt
+num     .fill   10000
+bit15   .fill   32768                           for checking the sign bit when it's 16bit
