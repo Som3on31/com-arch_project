@@ -278,7 +278,7 @@ public class Assembler {
                     break;
 
                 String instBin = convert(separate(inst[i]), labels, pc);
-                sb.append(instBin);
+                sb.append(binarytodeciaml(instBin));
                 instInBits[i] = instBin;
                 sb.append("\n");
             }
