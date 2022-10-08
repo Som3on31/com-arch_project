@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.io.File;
 
 import components.Assembler;
+import components.Simulator;
 
 public class Test {
 
@@ -16,7 +17,11 @@ public class Test {
         // String exampleInst1 = "jalr 4 2";
 
         Assembler asb = new Assembler();
+        Simulator sim = new Simulator();
+
         System.out.println();
+
+        sim.printStateRun(0);
 
         try {
             // test label saving

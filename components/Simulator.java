@@ -1,6 +1,7 @@
 package components;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -67,7 +68,21 @@ public class Simulator {
         //
     }
 
-    private void printStateRun(int pc) {
+    public void printStateRun(int pc) throws FileNotFoundException {
+
+        File file = new File("./machine_code/mc1.txt");
+        Scanner scan = new Scanner(file);
+
+        System.out.println("@@@");
+        System.out.println("state:");
+        System.out.println("pc" + pc);
+        System.out.println("memory:");
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("mem" + "[" + i + "]" + scan.nextLine());
+
+        }
+        System.out.println("@@@");
         // print @@@ then show the current state of the simulator
         // example:
         // http://myweb.cmu.ac.th/sansanee.a/ComputerArchitecture/Project/ExSimulator.txt
