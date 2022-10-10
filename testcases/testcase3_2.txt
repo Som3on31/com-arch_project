@@ -2,8 +2,8 @@
         
 comb            
         beq     0       0       1               if n = 0 or n = r
-        beq     0       2       somewhere
-
+        beq     0       2       [somewhere]
+        
 
 
 stoppu  halt
