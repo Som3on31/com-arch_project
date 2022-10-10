@@ -39,6 +39,8 @@ public class Assembler {
                 break;
 
             converted[count] = current; // save the word
+            if (count >= 5) // the rest becomes a comment (won't be complied)
+                break;
             if (!s.hasNext())
                 break;
             current = s.next(); // go to the next word
@@ -352,7 +354,7 @@ public class Assembler {
      * @param numOfBits a number of requited bits
      * @return a string bit that has been modified
      */
-    private String toXBits(String bits, int numOfBits) {
+    protected static String toXBits(String bits, int numOfBits) {
         while (bits.length() < numOfBits) {
             bits = "0" + bits;
         }
