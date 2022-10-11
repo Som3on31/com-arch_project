@@ -87,45 +87,4 @@ public class Test {
         }
     }
 
-    private static int binToDec(String bits) {
-        int result = 0;
-        boolean twoC = false;
-
-        StringBuilder sb = new StringBuilder();
-        if (bits.length() == 32) {
-            twoC = true;
-
-            for (int i = 1; i < bits.length(); i++) {
-                if (bits.charAt(i) == '1')
-                    sb.append('0');
-                else if (bits.charAt(i) == '0')
-                    sb.append('1');
-                else
-                    return -2;
-            }
-
-        } else if (bits.length() > 32) {
-            return -1;
-        }
-
-        result = twoC ? (binToDec_U(sb.toString()) + 1) * (-1) : binToDec_U(sb.toString());
-
-        return result;
-    }
-
-    private static int binToDec_U(String bits) {
-        int result = 0;
-
-        if (bits.length() <= 31) {
-            for (int i = 0; i < bits.length(); i++) {
-                if (bits.charAt(i) == '1')
-                    result += Math.pow(2, bits.length() - 1 - i);
-            }
-        } else {
-            return -3;
-        }
-
-        return result;
-    }
-
 }
