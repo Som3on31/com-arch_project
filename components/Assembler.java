@@ -270,7 +270,7 @@ public class Assembler {
         return result;
     }
 
-    public String[] massConvert(String[] inst, Map<String, Integer> labels, int pc) {
+    public String[] massConvert(String[] inst, Map<String, Integer> labels) {
         String[] instInBits = new String[inst.length];
 
         StringBuilder sb = new StringBuilder();
@@ -279,7 +279,7 @@ public class Assembler {
                 if (inst[i] == null)
                     break;
 
-                String instBin = convert(separate(inst[i]), labels, pc);
+                String instBin = convert(separate(inst[i]), labels, i);
                 sb.append(binarytodeciaml(instBin));
                 instInBits[i] = instBin;
                 sb.append("\n");
