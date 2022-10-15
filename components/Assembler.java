@@ -39,7 +39,7 @@ public class Assembler {
                 break;
 
             converted[count] = current; // save the word
-            if (count >= 5) // the rest becomes a comment (won't be complied)
+            if (count >= 4) // the rest becomes a comment (won't be complied)
                 break;
             if (!s.hasNext())
                 break;
@@ -285,8 +285,12 @@ public class Assembler {
                 sb.append("\n");
             }
 
-            File file = new File("./machine_code/mc1.txt");
-            file.createNewFile();
+            File file = new File("./machine_code/mc.txt");
+            int dupeCount = 1; // keeps track on current dupes if the original exists
+            while (!file.createNewFile()) {
+                file = new File("./machine_code/mc (" + dupeCount + ").txt");
+                dupeCount++;
+            }
             FileWriter fw = new FileWriter(file);
             fw.write(sb.toString());
             fw.close();
