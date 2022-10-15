@@ -72,7 +72,7 @@ public class Test {
 
             // first test case
             Simulator s = new Simulator();
-            s.run("./testcases/testcase1.txt");
+            s.run("./testcases/testcase3_1.txt");
 
             // System.out.println(Simulator.binToDec("111", 5));
 
@@ -85,6 +85,39 @@ public class Test {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // String mcantBits = "1010";
+        // String mplierBits = "1111";
+        // int mcantNum = binToDec_U(mcantBits);
+        // int mplierNum = binToDec_U(mplierBits);
+
+        // int checkbit = 1;
+        // int result = 0;
+        // for (int i = 0; i < 4; i++) {
+        // int checker = ~(mplierNum & checkbit);
+        // int tempMcant = mcantNum * (int) Math.pow(2, i);
+        // System.out.println("Itration:" + (i + 1));
+        // System.out.println(Integer.toBinaryString(~(checker)));
+        // System.out.println(Integer.toBinaryString(tempMcant));
+        // if (~(checker) == checkbit)
+        // result += tempMcant;
+
+        // checkbit += checkbit;
+        // }
+        // System.out.println("------------------------------------------");
+        // System.out.println(Integer.toBinaryString(result));
+        // System.out.print(result);
     }
+
+    // private static int binToDec_U(String bits) {
+    // int result = 0;
+
+    // for (int i = 0; i < bits.length(); i++) {
+    // if (bits.charAt(i) == '1')
+    // result += Math.pow(2, bits.length() - 1 - i);
+    // }
+
+    // return result;
+    // }
 
 }
