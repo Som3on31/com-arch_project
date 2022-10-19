@@ -30,7 +30,7 @@ public class Simulator {
         savedLabels = new HashMap<>(); // clear all saved labels
 
         Assembler asb = new Assembler();
-        String[] instCode = new String[Short.MAX_VALUE];
+        String[] instCode = new String[(int) Math.pow(2, 16)];
 
         int instCount = 0;
 
@@ -46,9 +46,13 @@ public class Simulator {
                     break;
 
                 current = s.nextLine();
+                if (current.equals(""))
+                    while (current.equals("")) {
+                        current = s.nextLine();
+                    }
                 instCount++;
             }
-
+            instCount++;
             saveAllLabels(instCode, asb);
 
             s.close();
@@ -64,7 +68,6 @@ public class Simulator {
         // TODO execute inst given, remember to print error if it does anything
         // undefined in the project spec
 
-        printStateInitial(maxSize);
         doHalt = false;
         notStarted = true;
         instExecutedCount = 0;
@@ -75,7 +78,7 @@ public class Simulator {
                     throw new Exception("pc underflow");
                 throw new Exception("pc overflow");
             }
-            printState(pc, maxSize);
+            printState(pc, instCount);
 
             if (doHalt) {
                 break;
@@ -118,7 +121,7 @@ public class Simulator {
                     // jalr
                     if (rD != 0)
                         registers[rD] = pc + 1;
-                    pc = registers[rS];
+                    pc = registers[rS] - 1;
                 }
                 case "110" -> {
                     // halt
