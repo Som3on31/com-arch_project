@@ -16,7 +16,7 @@ mul     nand    4       3       5               check bits, starting from lsb to
         beq     0       0       mul             go back to the loop otherwise
         jalr    7       0                       return the final value, using $0 here means we are not going to save a return addr
 mulAdr  .fill   mulIni                          multiplier addr
-mcand   .fill   24
-mplier  .fill   45
+mcand   .fill   32766
+mplier  .fill   10383
 maxItr  .fill   -2147483648                     a limit of how many iteration is allowed (we use the msb as the limit)
 one     .fill   1                               for $4 and lsb check before shifting to the right
