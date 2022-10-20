@@ -1,16 +1,16 @@
-        lw      0       1       mcand           load inputs
-        lw      0       2       mplier
+        lw      0       2       mcand           load inputs
+        lw      0       3       mplier
         lw      0       6       mulAdr          load mulIni's addr
         jalr    6       7                       CALL FN|jump to mul, saving the return addr to $7
 E       noop                                    placeholder lol
 stoppu  halt
 mulIni  lw      0       6       maxItr          start of multiplication algorithm
         lw      0       4       one
-mul     nand    4       2       5               check bits, starting from lsb to msb 
+mul     nand    4       3       5               check bits, starting from lsb to msb 
         nand    5       5       5
         beq     5       0       1               check the condition if the lsb is 1                     
-        add     1       3       3               UPDATE LOOP|increment here
-        add     1       1       1               temp mcand
+        add     2       1       1               UPDATE LOOP|increment here
+        add     2       2       2               temp mcand
         add     4       4       4               check the next bit of mplier
         beq     4       6       1               go to jalr below once it is the 32nd iteration
         beq     0       0       mul             go back to the loop otherwise
