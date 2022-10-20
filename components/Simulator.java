@@ -221,7 +221,6 @@ public class Simulator {
                     throw new Exception("Labels must not be longer than 6 characters.");
                 }
             }
-            binToDec("111", 5);
 
             maxSize = i;
         }

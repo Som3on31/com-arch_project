@@ -1,58 +1,45 @@
-        lw      0       1       valN            load n's and r's value
+        lw      0       1       valN            loads n's and r's value
         lw      0       2       valR
-        lw      0       6       cbnAd1          load combination's addr
-        lw      0       5       stack           load stack's addr
-        lw      0       4       one             load +1
-        lw      0       6       lobOne          load -1
-        jalr    6       7             
-E       noop
+        lw      0       6       cbAdIn          loads combination's addr
+        lw      0       4       one             loads +1
+        jalr    6       7                       go to the function
 stoppu  halt
 comIni  sw      5       7       stack           saves return addr
         add     4       5       5
-        sw      5       2       stack           save r
+        sw      5       2       stack           saves r
         add     4       5       5
-        sw      5       1       stack           save n
-        add     4       5       5 
-combIf  beq     1       2       3               |if r = 0 or n = r
-        beq     0       1       2               |if all these condition do not satisfy, go below
-        lw      0       7       cbArR1          save an addr to go do recursion
-        add     4       5       5               n--
-        add     6       1       1
-        jalr    7       0                       go back to comIni
-comRc1  lw      5       1       stack           load n back
-        add     6       5       5       
+        sw      5       1       stack           saves n
+        add     4       5       5
+combIf  beq     1       2       comRtn          |if r = 0 or n = r
+        beq     0       2       comRtn          |if all these condition do not satisfy, go below            
+cbFail  lw      0       6       lobOne          loads -1 to do n--
         add     6       1       1               n--
-        lw      5       2       stack           load r back
-        add     6       5       5
-        add     6       2       2               r--    
+        lw      0       6       cbAdIn          saves an addr before doing recursion
+        jalr    6       7                       goes back to comIni
+        add     6       5       5               * pops to get n
+        lw      5       1       stack           loads n back
+        add     6       1       1               n--
+        add     6       5       5               * pops to get r
+        lw      5       2       stack           loads r back
+        add     6       2       2               r--
+        lw      0       6       cbAdIn          
         add     4       5       5               $5+=2
-        add     4       5       5           
-        jalr    7       0
-comRtn  add     4       3       3               $3++
+        add     4       5       5                
+        jalr    6       7
+        lw      0       6       cbAdPo
+        jalr    6       7       
+comRtn  add     4       3       3               $3++        
+comPop  lw      0       6       lobOne
         add     6       5       5               pop all lol
         add     6       5       5               
-        add     6       5       5
-        jalr    7       0        
-cbnAd1  .fill   comIni                          combination's addr
-cbnrAd  .fill   comRcs
-cbAdR1  .fill   comRc1
-one     .fill   1                               used for test case
-lobOne  .fill   -1
-valN    .fill   4                               
-valR    .fill   2  
+        add     6       5       5               
+        lw      5       7       stack
+        jalr    7       0
+cbAdIn  .fill   comIni                          combination's addr
+cbAdPo  .fill   comPop                          combination's addr - pop section
+cbAdRt  .fill   comRtn                          combination's addr - base case return
+one     .fill   1                               used for test case and increment
+lobOne  .fill   -1                              used for decrement
+valN    .fill   7                               
+valR    .fill   3  
 stack   .fill   0                               exits to keep a number here, be it an addr or actual val
-
-
-$1 for n
-$2 for r
-$3 for return val
-$4 for one or minus one
-$5 for stack pointer
-$6 for various temp
-$7 for return addr
-
-data stack is kept in the form of the following:
-| return addr |
-|    r val    |
-|    n val    |
-it will only be popped as a whole when reaching a base case stated in the code
