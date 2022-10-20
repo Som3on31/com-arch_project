@@ -1,0 +1,10 @@
+            lw      0       Counter       0
+add         1       2       1 
+add         a0      x0      1           # Set t0 to be a 0 (counter variable) # Set t1 to be a0, which represents x # Set a0, the return value, to 1 
+loop        bge     t0      a1      end # End the loop if the counter is greater than or equal to a1 (represents n) 
+mul         a0      a0      t1 
+add         t0      t0      1 
+jal         x0      loop 
+end         jr      ra                  # Multiply the running product a0 by t1 (which holds x) # Increment the counter # Jump back to the while condition # Return to calle
+
+num     .fill   10000
