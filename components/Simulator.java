@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Simulator {
     // memory
     int maxSize;
-    int[] instBin;
+    int[] memory;
     int[] registers;
     HashMap<String, Integer> savedLabels; // save all label's positions
 
@@ -19,14 +19,14 @@ public class Simulator {
 
     public Simulator() {
         // instCode = new String[Short.MAX_VALUE];
-        instBin = new int[(int) Math.pow(2, 16)];
+        memory = new int[(int) Math.pow(2, 16)];
         maxSize = 0;
         registers = new int[8];
     }
 
     public void run(String filedesc) throws Exception {
         Arrays.fill(registers, 0); // reset all available val in the regs to 0
-        Arrays.fill(instBin, 0);
+        Arrays.fill(memory, 0);
         savedLabels = new HashMap<>(); // clear all saved labels
 
         Assembler asb = new Assembler();
@@ -34,36 +34,31 @@ public class Simulator {
 
         int instCount = 0;
 
-        try {
-            Scanner s = new Scanner(new File(filedesc));
-            String current = s.nextLine();
+        Scanner s = new Scanner(new File(filedesc));
+        String current = s.nextLine();
+        instCode[instCount] = current;
+
+        while (current != null) {
+
             instCode[instCount] = current;
+            if (!s.hasNext())
+                break;
 
-            while (current != null) {
-
-                instCode[instCount] = current;
-                if (!s.hasNext())
-                    break;
-
-                current = s.nextLine();
-                if (current.equals(""))
-                    while (current.equals("")) {
-                        current = s.nextLine();
-                    }
-                instCount++;
-            }
+            current = s.nextLine();
+            if (current.equals(""))
+                while (current.equals("")) {
+                    current = s.nextLine();
+                }
             instCount++;
-            saveAllLabels(instCode, asb);
-
-            s.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        instCount++;
+
+        s.close();
 
         // TODO separate all inst codes into parts then convert them into binary and hex
         // address
-        String[] instBinStr = asb.massConvert(instCode, savedLabels);
-        instBin = binToDec_Arr(instBinStr);
+        String[] memoryStr = asb.massConvert(instCode);
+        memory = binToDec_Arr(memoryStr);
 
         // TODO execute inst given, remember to print error if it does anything
         // undefined in the project spec
@@ -73,7 +68,7 @@ public class Simulator {
         instExecutedCount = 0;
         for (int pc = 0; pc < instCount; pc++) {
             // if pc is 0 or over the max value of 8-bit integer
-            if (pc < 0 || pc > Short.MAX_VALUE) {
+            if (pc < 0 || pc > (int) Math.pow(2, 16)) {
                 if (pc < 0)
                     throw new Exception("pc underflow");
                 throw new Exception("pc overflow");
@@ -85,7 +80,7 @@ public class Simulator {
             }
 
             // do something
-            String instStr = instBinStr[pc];
+            String instStr = memoryStr[pc];
             String type = instStr.substring(7, 10);
 
             int rS = binToDec_U(instStr.substring(10, 13));
@@ -106,11 +101,11 @@ public class Simulator {
                 case "010" -> {
                     // lw
                     if (rD != 0)
-                        registers[rD] = instBin[registers[rS] + imm];
+                        registers[rD] = memory[registers[rS] + imm];
                 }
                 case "011" -> {
                     // sw
-                    instBin[registers[rS] + imm] = registers[rD];
+                    memory[registers[rS] + imm] = registers[rD];
                 }
                 case "100" -> {
                     // beq
@@ -145,7 +140,7 @@ public class Simulator {
     private void printStateInitial(int maxSize) {
         // show mem
         for (int i = 0; i < maxSize; i++) {
-            System.out.println("Memory" + "[" + i + "]" + instBin[i]);
+            System.out.println("Memory" + "[" + i + "]" + memory[i]);
         }
         //
     }
@@ -161,7 +156,7 @@ public class Simulator {
         System.out.println("    memory:");
 
         for (int i = 0; i < maxSize; i++) {
-            System.out.println("        mem[ " + i + " ] " + instBin[i]);
+            System.out.println("        mem[ " + i + " ] " + memory[i]);
 
         }
 
@@ -193,40 +188,6 @@ public class Simulator {
 
     // TODO add any private code if necessary, do not forget to comment how it works
     // (either English or Thai) then type - [name] after the comment
-
-    /**
-     * Break instruction code into parts then keep all labels used in the file
-     * <p>
-     * By Saharit Kadkasem
-     * </p>
-     * 
-     * @param instCode An array of instruction code
-     * @param asb      An assembler
-     * @return
-     * @throws Exception If any duplicate label or any illegally defined label (e.g.
-     *                   length greater than 6) is found
-     */
-    private String[][] saveAllLabels(String[] instCode, Assembler asb) throws Exception {
-        String[][] instInParts = new String[instCode.length][5];
-        for (int i = 0; i < instCode.length && instCode[i] != null; i++) {
-            instInParts[i] = asb.separate(instCode[i]);
-
-            if (instInParts[i][0] != null) {
-                if (savedLabels.containsKey(instInParts[i][0]))
-                    throw new Exception("Duplicate label");
-
-                if (instInParts[i][0].length() <= 6)
-                    savedLabels.put(instInParts[i][0], i);
-                else {
-                    throw new Exception("Labels must not be longer than 6 characters.");
-                }
-            }
-
-            maxSize = i;
-        }
-
-        return instInParts;
-    }
 
     /**
      * Coverts an array of binary string into a 32-bit integer by using a method
