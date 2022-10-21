@@ -2,12 +2,15 @@ package components;
 
 import java.io.FileWriter;
 import java.io.File;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Scanner;
 
 // import components.subcomponents.*;
 
 public class Assembler {
+
+    int maxSize;
+    HashMap<String, Integer> savedLabels; // save all label's positions
 
     public Assembler() {
 
@@ -154,7 +157,7 @@ public class Assembler {
      * @return A string of an instruction code
      * @throws Exception
      */
-    public String convert(String[] instParts, Map<String, Integer> labels, int pc) throws Exception {
+    public String convert(String[] instParts, int pc) throws Exception {
         String result;
         String type;
         switch (instParts[1]) {
@@ -186,7 +189,8 @@ public class Assembler {
             long rS = Long.parseLong(String.valueOf(instParts[2]));
             long rD = Long.parseLong(String.valueOf(instParts[3]));
             long offsetField = isNumber(instParts[4]) ? Long.parseLong(String.valueOf(instParts[4]))
-                    : instParts[1].equals("beq") ? labels.get(instParts[4]) - pc - 1 : labels.get(instParts[4]);
+                    : instParts[1].equals("beq") ? savedLabels.get(instParts[4]) - pc - 1
+                            : savedLabels.get(instParts[4]);
 
             if (offsetField < -32768 || offsetField > 32767)
                 throw new Exception("Offset field must be within -32768 to 32767");
@@ -238,7 +242,7 @@ public class Assembler {
             }
             result = sb.toString();
         } else if (isFill(instParts[1])) {
-            int valInt = isNumber(instParts[2]) ? Integer.parseInt(instParts[2]) : labels.get(instParts[2]);
+            int valInt = isNumber(instParts[2]) ? Integer.parseInt(instParts[2]) : savedLabels.get(instParts[2]);
             String val = Integer.toBinaryString(valInt);
 
             StringBuilder sb = new StringBuilder();
@@ -253,7 +257,11 @@ public class Assembler {
         return result;
     }
 
-    public String[] massConvert(String[] inst, Map<String, Integer> labels) {
+    public String[] massConvert(String[] inst) throws Exception {
+        savedLabels = new HashMap<>();
+
+        saveAllLabels(inst);
+
         String[] instInBits = new String[inst.length];
 
         StringBuilder sb = new StringBuilder();
@@ -262,7 +270,7 @@ public class Assembler {
                 if (inst[i] == null)
                     break;
 
-                String instBin = convert(separate(inst[i]), labels, i);
+                String instBin = convert(separate(inst[i]), i);
                 sb.append(binarytodeciaml(instBin));
                 instInBits[i] = instBin;
                 sb.append("\n");
@@ -282,6 +290,39 @@ public class Assembler {
         }
 
         return instInBits;
+    }
+
+    /**
+     * Break instruction code into parts then keep all labels used in the file
+     * <p>
+     * By Saharit Kadkasem
+     * </p>
+     * 
+     * @param instCode An array of instruction code
+     * @return
+     * @throws Exception If any duplicate label or any illegally defined label (e.g.
+     *                   length greater than 6) is found
+     */
+    private String[][] saveAllLabels(String[] instCode) throws Exception {
+        String[][] instInParts = new String[instCode.length][5];
+        for (int i = 0; i < instCode.length && instCode[i] != null; i++) {
+            instInParts[i] = separate(instCode[i]);
+
+            if (instInParts[i][0] != null) {
+                if (savedLabels.containsKey(instInParts[i][0]))
+                    throw new Exception("Duplicate label");
+
+                if (instInParts[i][0].length() <= 6)
+                    savedLabels.put(instInParts[i][0], i);
+                else {
+                    throw new Exception("Labels must not be longer than 6 characters.");
+                }
+            }
+
+            maxSize = i;
+        }
+
+        return instInParts;
     }
 
     // ------------------------------ All utilities methods go
