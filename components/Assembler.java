@@ -17,8 +17,10 @@ public class Assembler {
     }
 
     /**
+     * Separate instruction into parts in the form of the following:
+     * {label,inst,rs,rt,field}
      * 
-     * @param instCode
+     * @param instCode a line of instruction
      * @return a string of 32-bit code in binary
      * @throws Exception
      */
@@ -150,9 +152,9 @@ public class Assembler {
     }
 
     /**
+     * Converts an instruction into a string of 32-bit binary code
      * 
      * @param instParts An instruction that has been separated into parts
-     * @param labels    A map which contains the position of all saved labels
      * @param pc        Current position where the simulator is reading
      * @return A string of an instruction code
      * @throws Exception

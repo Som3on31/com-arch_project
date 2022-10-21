@@ -2,15 +2,12 @@ package components;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class Simulator {
     // memory
-    int maxSize;
     int[] memory;
     int[] registers;
-    HashMap<String, Integer> savedLabels; // save all label's positions
 
     // status check
     boolean notStarted;
@@ -20,14 +17,12 @@ public class Simulator {
     public Simulator() {
         // instCode = new String[Short.MAX_VALUE];
         memory = new int[(int) Math.pow(2, 16)];
-        maxSize = 0;
         registers = new int[8];
     }
 
     public void run(String filedesc) throws Exception {
         Arrays.fill(registers, 0); // reset all available val in the regs to 0
         Arrays.fill(memory, 0);
-        savedLabels = new HashMap<>(); // clear all saved labels
 
         Assembler asb = new Assembler();
         String[] instCode = new String[(int) Math.pow(2, 16)];
