@@ -157,7 +157,7 @@ public class Simulator {
 
         System.out.println("@@@");
         System.out.println("state:");
-        System.out.println("    pc" + pc);
+        System.out.println("    pc " + pc);
         System.out.println("    memory:");
 
         for (int i = 0; i < maxSize; i++) {
