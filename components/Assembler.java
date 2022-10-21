@@ -181,19 +181,15 @@ public class Assembler {
             rs = toXBits(rs, 3);
             rt = toXBits(rt, 3);
 
-            System.out.println("");
-            System.out.println("Ins : " + instParts[1]);
-            System.out.println("rd : " + rd); // bit 0-2
-            System.out.println("rs1 : " + rs);// bit 21-19
-            System.out.println("rs2 : " + rt);// bit 18-16
             result = "0000000" + type + rs + rt + "0000000000000" + rd;
-            System.out.println(result);
-            System.out.println(binarytodeciaml(result));
         } else if (isItype(instParts[1])) { // case lw I-type
             long rS = Long.parseLong(String.valueOf(instParts[2]));
             long rD = Long.parseLong(String.valueOf(instParts[3]));
             long offsetField = isNumber(instParts[4]) ? Long.parseLong(String.valueOf(instParts[4]))
                     : instParts[1].equals("beq") ? labels.get(instParts[4]) - pc - 1 : labels.get(instParts[4]);
+
+            if (offsetField < -32768 || offsetField > 32767)
+                throw new Exception("Offset field must be within -32768 to 32767");
 
             String rd = Long.toBinaryString(rD);
             String rs = Long.toBinaryString(rS);
@@ -204,17 +200,10 @@ public class Assembler {
             rs = toXBits(rs, 3); // Check rs1 bit
             imm = toXBits(imm, 16); // Check imm bit
 
-            System.out.println("");
-            System.out.println("Ins : " + instParts[1]);
-            System.out.println("rs : " + rs);
-            System.out.println("rd : " + rd);
-            System.out.println("imm : " + imm);
             result = type + rs + rd + imm;
             do {
                 result = "0" + result;
             } while (result.length() < 32);
-            System.out.println(result);
-            System.out.println(binarytodeciaml(result));
         } else if (isJtype(instParts[1])) {
             long rS = Long.parseLong(String.valueOf(instParts[2]));
             long rD = Long.parseLong(String.valueOf(instParts[3]));
@@ -237,8 +226,6 @@ public class Assembler {
                 sb.append('0');
             }
             result = sb.toString();
-            System.out.println(result);
-            System.out.println(binarytodeciaml(result));
         } else if (isOtype(instParts[1])) {
             StringBuilder sb = new StringBuilder();
             for (int i = 32; i > 0; i--) {
@@ -250,8 +237,6 @@ public class Assembler {
                 sb.append('0');
             }
             result = sb.toString();
-            System.out.println(result);
-            System.out.println(binarytodeciaml(result));
         } else if (isFill(instParts[1])) {
             int valInt = isNumber(instParts[2]) ? Integer.parseInt(instParts[2]) : labels.get(instParts[2]);
             String val = Integer.toBinaryString(valInt);
@@ -262,8 +247,6 @@ public class Assembler {
             }
             sb.append(val);
             result = sb.toString();
-            System.out.println(result);
-            System.out.println(binarytodeciaml(result));
         } else
             throw new Exception("Type currently not supported at the moment");
 
