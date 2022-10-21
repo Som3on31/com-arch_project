@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class Assembler {
 
     public Assembler() {
-
     }
 
     /**
