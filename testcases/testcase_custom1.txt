@@ -1,15 +1,23 @@
-        lw      0       1       degree
-        lw      0       2       i
-loop    beq     1       2       stop 
-        add     2       2       one             i=i+1
-        lw      0       2       num             load inputs
-        lw      0       3       num
+power   lw      0       2       mcand           load inputs
+        lw      0       3       mplier
         lw      0       6       mulAdr          load mulIni's addr
+        lw      0       4       degree          load degree
+        lw      0       5       i               load i
+        beq     4       5       E               degree > 0 but i > degree
+        beq     0       5       rtnD0           degree = 0
         jalr    6       7                       CALL FN|jump to mul, saving the return addr to $7
+        sw      0       1       mcand           saved the result
+        lw      0       4       one             
+        lw      0       5       i
+        add     4       5       5               increment i
+        sw      0       5       i               save it
+        beq     0       0       power           go back to looping
+rtnD0   lw      0       1       one             return 1 if the degree is 0
 E       noop                                    placeholder lol
 stoppu  halt
 mulIni  lw      0       6       maxItr          start of multiplication algorithm
         lw      0       4       one
+        add     0       0       1
 mul     nand    4       3       5               check bits, starting from lsb to msb 
         nand    5       5       5
         beq     5       0       1               check the condition if the lsb is 1                     
@@ -19,13 +27,11 @@ mul     nand    4       3       5               check bits, starting from lsb to
         beq     4       6       1               go to jalr below once it is the 32nd iteration
         beq     0       0       mul             go back to the loop otherwise
         jalr    7       0                       return the final value, using $0 here means we are not going to save a return addr
-        beq     0       0       loop            go to loop
 mulAdr  .fill   mulIni                          multiplier addr
-mcand   .fill   num
-mplier  .fill   num
+mcand   .fill   2
+mplier  .fill   2
 maxItr  .fill   -2147483648                     a limit of how many iteration is allowed (we use the msb as the limit)
 one     .fill   1
 stop    noop
-i       .fill   1
-num     .fill   2  
-degree  .fill   2                         for $4 and lsb check before shifting to the right
+i       .fill   1  
+degree  .fill   5                         for $4 and lsb check before shifting to the right
