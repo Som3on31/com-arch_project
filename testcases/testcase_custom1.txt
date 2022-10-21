@@ -1,10 +1,31 @@
-            lw      0       Counter       0
-add         1       2       1 
-add         a0      x0      1           # Set t0 to be a 0 (counter variable) # Set t1 to be a0, which represents x # Set a0, the return value, to 1 
-loop        bge     t0      a1      end # End the loop if the counter is greater than or equal to a1 (represents n) 
-mul         a0      a0      t1 
-add         t0      t0      1 
-jal         x0      loop 
-end         jr      ra                  # Multiply the running product a0 by t1 (which holds x) # Increment the counter # Jump back to the while condition # Return to calle
-
-num     .fill   10000
+        lw      0       1       degree
+        lw      0       2       i
+loop    beq     1       2       stop 
+        add     2       2       one             i=i+1
+        lw      0       2       num             load inputs
+        lw      0       3       num
+        lw      0       6       mulAdr          load mulIni's addr
+        jalr    6       7                       CALL FN|jump to mul, saving the return addr to $7
+E       noop                                    placeholder lol
+stoppu  halt
+mulIni  lw      0       6       maxItr          start of multiplication algorithm
+        lw      0       4       one
+mul     nand    4       3       5               check bits, starting from lsb to msb 
+        nand    5       5       5
+        beq     5       0       1               check the condition if the lsb is 1                     
+        add     2       1       1               UPDATE LOOP|increment here
+        add     2       2       2               temp mcand
+        add     4       4       4               check the next bit of mplier
+        beq     4       6       1               go to jalr below once it is the 32nd iteration
+        beq     0       0       mul             go back to the loop otherwise
+        jalr    7       0                       return the final value, using $0 here means we are not going to save a return addr
+        beq     0       0       loop            go to loop
+mulAdr  .fill   mulIni                          multiplier addr
+mcand   .fill   num
+mplier  .fill   num
+maxItr  .fill   -2147483648                     a limit of how many iteration is allowed (we use the msb as the limit)
+one     .fill   1
+stop    noop
+i       .fill   1
+num     .fill   2  
+degree  .fill   2                         for $4 and lsb check before shifting to the right

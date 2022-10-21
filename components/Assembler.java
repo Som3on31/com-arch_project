@@ -13,7 +13,6 @@ public class Assembler {
     HashMap<String, Integer> savedLabels; // save all label's positions
 
     public Assembler() {
-
     }
 
     /**
