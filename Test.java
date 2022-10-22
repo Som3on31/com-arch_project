@@ -1,3 +1,5 @@
+import components.Assembler;
+import components.Pair;
 import components.Simulator;
 
 public class Test {
@@ -66,10 +68,14 @@ public class Test {
             // asb.convert(result, savedLabels, 0); // convert word to binary
 
             // first test case
-            Simulator s = new Simulator();
+
             // s.run("./testcases/testcase1.txt");
             // s.run("./testcases/testcase3_1.txt");
-            s.run("./testcases/testcase3_2.txt");
+            Simulator s = new Simulator();
+            Assembler asb = new Assembler();
+            String filedesc = "./testcases/testcase3_2.txt";
+            Pair<String[], Integer> machineCode = asb.massConvert(filedesc);
+            s.run(machineCode.fst(), machineCode.snd());
             // s.run("./testcases/testcase_custom1.txt");
 
             // System.out.println(Simulator.binToDec("111", 5));
