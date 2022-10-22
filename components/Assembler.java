@@ -303,6 +303,34 @@ public class Assembler {
         return instInBits;
     }
 
+    public Pair<String[], Integer> massConvert(String filedesc) throws Exception {
+
+        String[] instCode = new String[(int) Math.pow(2, 16)];
+        int instCount = 0;
+
+        try (Scanner s = new Scanner(new File(filedesc))) {
+            String current = s.nextLine();
+            instCode[instCount] = current;
+
+            while (current != null) {
+
+                instCode[instCount] = current;
+                if (!s.hasNext())
+                    break;
+
+                current = s.nextLine();
+                if (current.equals(""))
+                    while (current.equals("")) {
+                        current = s.nextLine();
+                    }
+                instCount++;
+            }
+        }
+        instCount++;
+
+        return new Pair<>(massConvert(instCode), instCount);
+    }
+
     /**
      * Break instruction code into parts then keep all labels used in the file
      * <p>

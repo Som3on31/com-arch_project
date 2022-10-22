@@ -1,8 +1,6 @@
 package components;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Simulator {
     // memory
@@ -20,40 +18,34 @@ public class Simulator {
         registers = new int[8];
     }
 
-    public void run(String filedesc) throws Exception {
+    public void run(String[] machineBinary, int instCount) throws Exception {
         Arrays.fill(registers, 0); // reset all available val in the regs to 0
         Arrays.fill(memory, 0);
 
-        Assembler asb = new Assembler();
-        String[] instCode = new String[(int) Math.pow(2, 16)];
+        // Scanner s = new Scanner(new File(filedesc));
+        // String current = s.nextLine();
+        // instCode[instCount] = current;
 
-        int instCount = 0;
+        // while (current != null) {
 
-        Scanner s = new Scanner(new File(filedesc));
-        String current = s.nextLine();
-        instCode[instCount] = current;
+        // instCode[instCount] = current;
+        // if (!s.hasNext())
+        // break;
 
-        while (current != null) {
+        // current = s.nextLine();
+        // if (current.equals(""))
+        // while (current.equals("")) {
+        // current = s.nextLine();
+        // }
+        // instCount++;
+        // }
+        // instCount++;
 
-            instCode[instCount] = current;
-            if (!s.hasNext())
-                break;
-
-            current = s.nextLine();
-            if (current.equals(""))
-                while (current.equals("")) {
-                    current = s.nextLine();
-                }
-            instCount++;
-        }
-        instCount++;
-
-        s.close();
+        // s.close();
 
         // TODO separate all inst codes into parts then convert them into binary and hex
         // address
-        String[] memoryStr = asb.massConvert(instCode);
-        memory = binToDec_Arr(memoryStr);
+        memory = binToDec_Arr(machineBinary);
 
         // TODO execute inst given, remember to print error if it does anything
         // undefined in the project spec
@@ -75,7 +67,9 @@ public class Simulator {
             }
 
             // do something
-            String instStr = memoryStr[pc];
+            String instStr = Integer.toBinaryString(memory[pc]);
+            if (instStr.length() < 32)
+                instStr = extendTo32Bits(instStr);
             String type = instStr.substring(7, 10);
 
             int rS = binToDec_U(instStr.substring(10, 13));
@@ -296,5 +290,16 @@ public class Simulator {
         }
 
         return result;
+    }
+
+    private static String extendTo32Bits(String bits) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 32 - bits.length(); i++) {
+            sb.append('0');
+        }
+        sb.append(bits);
+
+        return sb.toString();
     }
 }
