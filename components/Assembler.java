@@ -178,6 +178,11 @@ public class Assembler {
             long r2 = Long.parseLong(String.valueOf(instParts[3])); // rs2
             long r3 = Long.parseLong(String.valueOf(instParts[4])); // rd
 
+            if (r1 > 7 || r2 > 7 || r3 > 7)
+                throw new Exception("Register address cannot exceed 7");
+            if (r1 < 0 || r2 < 0 || r3 < 0)
+                throw new Exception("Register address cannot be below 0");
+
             String rd = Long.toBinaryString(r3);// destReg
             String rs = Long.toBinaryString(r1); // reg A
             String rt = Long.toBinaryString(r2); // reg B
@@ -189,10 +194,16 @@ public class Assembler {
         } else if (isItype(instParts[1])) { // case lw I-type
             long rS = Long.parseLong(String.valueOf(instParts[2]));
             long rD = Long.parseLong(String.valueOf(instParts[3]));
+
+            if (!isNumber(instParts[4]) && !savedLabels.containsKey(instParts[4]))
+                throw new Exception("Undefined label");
+
             long offsetField = isNumber(instParts[4]) ? Long.parseLong(String.valueOf(instParts[4]))
                     : instParts[1].equals("beq") ? savedLabels.get(instParts[4]) - pc - 1
                             : savedLabels.get(instParts[4]);
 
+            if (rS > 7 || rD > 7)
+                throw new Exception("Register address cannot exceed 7");
             if (offsetField < -32768 || offsetField > 32767)
                 throw new Exception("Offset field must be within -32768 to 32767");
 
@@ -212,6 +223,9 @@ public class Assembler {
         } else if (isJtype(instParts[1])) {
             long rS = Long.parseLong(String.valueOf(instParts[2]));
             long rD = Long.parseLong(String.valueOf(instParts[3]));
+
+            if (rS > 7 || rD > 7)
+                throw new Exception("Register address cannot exceed 7");
 
             String rs = Long.toBinaryString(rS);
             String rd = Long.toBinaryString(rD);
@@ -266,29 +280,25 @@ public class Assembler {
         String[] instInBits = new String[inst.length];
 
         StringBuilder sb = new StringBuilder();
-        try {
-            for (int i = 0; i < inst.length; i++) {
-                if (inst[i] == null)
-                    break;
+        for (int i = 0; i < inst.length; i++) {
+            if (inst[i] == null)
+                break;
 
-                String instBin = convert(separate(inst[i]), i);
-                sb.append(binarytodeciaml(instBin));
-                instInBits[i] = instBin;
-                sb.append("\n");
-            }
-
-            File file = new File("./machine_code/mc.txt");
-            int dupeCount = 1; // keeps track on current dupes if the original exists
-            while (!file.createNewFile()) {
-                file = new File("./machine_code/mc (" + dupeCount + ").txt");
-                dupeCount++;
-            }
-            FileWriter fw = new FileWriter(file);
-            fw.write(sb.toString());
-            fw.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            String instBin = convert(separate(inst[i]), i);
+            sb.append(binarytodeciaml(instBin));
+            instInBits[i] = instBin;
+            sb.append("\n");
         }
+
+        File file = new File("./machine_code/mc.txt");
+        int dupeCount = 1; // keeps track on current dupes if the original exists
+        while (!file.createNewFile()) {
+            file = new File("./machine_code/mc (" + dupeCount + ").txt");
+            dupeCount++;
+        }
+        FileWriter fw = new FileWriter(file);
+        fw.write(sb.toString());
+        fw.close();
 
         return instInBits;
     }
